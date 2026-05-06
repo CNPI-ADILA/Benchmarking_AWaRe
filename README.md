@@ -4,7 +4,7 @@ Public repository for Benchmarking AWaRe antibiotic use code and results
 This is the repository for code and extractable results files that accompanies the manuscript: 
 Cook, A. et al., Benchmarking AWaRe: estimating optimal levels of AWaRe antibiotic use in 186 countries, territories and areas based on clinical infection and resistance burden. 2026 (preprint) doi: https://doi.org/10.64898/2026.01.26.26344900
 
-All code and datasets have been written and prepared by Aislinn Cook. For any questions please contact aislinn.cook@citystgeorges.ac.uk
+All code and datasets have been written and prepared by Aislinn Cook. For any questions please contact aicook@citystgeorges.ac.uk
 
 
 # Overview of Files
