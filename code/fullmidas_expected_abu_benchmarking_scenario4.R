@@ -58,23 +58,23 @@ rm(list = ls())
 #--------------------------#
 
 # import full MIDAS cluster assignments 
-clusters <- import(here("04_final_datasets", "clustering", "fullmidas", "fullmidas.cluster.assign.tidy.RDATA"))
+clusters <- import(here("data", "fullmidas.cluster.assign.tidy.RDATA"))
 
 # import covariates (post processing)
-covars <- import(here("04_final_datasets", "post_imputation", "covariates.postimp.RDATA"))
+covars <- import(here("data", "covariates.postimp.RDATA"))
 
 # select descriptive vars
 covars <- covars %>% dplyr::select(iso3_code, country_name, who_reg, midas_country_flag, glass_country_flag, pop_totl, gni_cap_usdat, income)
 
 # Read in Full MIDAS data post imputation - complete imputed dataset - select DID draws for benchmark countries 
-fullmidas <- import(here("04_final_datasets", "post_imputation", "midasfull.postimp.RDATA"))
+fullmidas <- import(here("data", "midasfull.postimp.RDATA"))
 
 # analysis countries 
-analysis.countries.df <- import(here("04_final_datasets", "analysis.countries.RDATA"))
+analysis.countries.df <- import(here("data", "analysis.countries.RDATA"))
 analysis.countries <- analysis.countries.df$iso3_code # want as a vector of values
 
 # Read in analysis functions ####
-source(here("05_analysis", "fair_share_paper", "abu_estimate_functions.R"))
+source(here("code", "abu_estimate_functions.R"))
 
 
 
@@ -83,36 +83,35 @@ source(here("05_analysis", "fair_share_paper", "abu_estimate_functions.R"))
 #---------------------------------------------#
 
 # infection incidence draws when including the estimates of HAIs that weren't in GBD - same as scenario 1
-total.inf.inc <- import(here("04_final_datasets", "infection_draws", "total.inc.per100k.draws.scen1.RDATA"))
+total.inf.inc <- import(here("data", "total.inc.per100k.draws.scen1.RDATA"))
 
 
 # Watch infection case counts 
 
 # read in case counts of variables needed for watch DDD - cases as is and adjusted cases 
-dysentery.cases <- import(here("04_final_datasets", "infection_draws", "dys.cases.df.RDATA"))
-cholera.cases <- import(here("04_final_datasets", "infection_draws", "cholera.cases.draws.RDATA"))
-chlamydia.cases <- import(here("04_final_datasets", "infection_draws", "chlamydia.cases.df.RDATA"))
-gonorrhoea.cases <- import(here("04_final_datasets", "infection_draws", "gonorrhoea.cases.df.RDATA"))
-xdr.tb.cases <- import(here("04_final_datasets", "infection_draws", "xdr_tb.cases.df.RDATA"))
-mdr.tb.cases <- import(here("04_final_datasets", "infection_draws", "mdr_tb.cases.df.RDATA"))
-sepsis.cases <- import(here("04_final_datasets", "infection_draws", "sepsis.cases.sim.df.RDATA")) %>% rename(iso3_code = country) %>% rename_with(~ sub("^V", "X", .x), .cols = starts_with("V"))
-uti.upper.cases <- import(here("04_final_datasets", "infection_draws", "uti.predicted.upper.cases.RDATA")) %>% dplyr::select(-pop_totl)
-severe.lri.cases <- import(here("04_final_datasets", "infection_draws", "severe.lri.cases.RDATA"))
-typhoid.cases <- import(here("04_final_datasets", "infection_draws", "typhoid.10xsuspected.50per100k.cases.RDATA")) # changed to teh 10x inflated 
+dysentery.cases <- import(here("data", "dys.cases.df.RDATA"))
+cholera.cases <- import(here("data", "cholera.cases.draws.RDATA"))
+chlamydia.cases <- import(here("data", "chlamydia.cases.df.RDATA"))
+gonorrhoea.cases <- import(here("data", "gonorrhoea.cases.df.RDATA"))
+xdr.tb.cases <- import(here("data", "xdr_tb.cases.df.RDATA"))
+mdr.tb.cases <- import(here("data", "mdr_tb.cases.df.RDATA"))
+sepsis.cases <- import(here("data", "sepsis.cases.sim.df.RDATA")) %>% rename(iso3_code = country) %>% rename_with(~ sub("^V", "X", .x), .cols = starts_with("V"))
+uti.upper.cases <- import(here("data", "uti.predicted.upper.cases.RDATA")) %>% dplyr::select(-pop_totl)
+severe.lri.cases <- import(here("data", "severe.lri.cases.RDATA"))
+typhoid.cases <- import(here("data", "typhoid.10xsuspected.50per100k.cases.RDATA")) # changed to teh 10x inflated 
 
-ssti.nf.cases <- import(here("04_final_datasets", "infection_draws", "ssti.nf.cases.RDATA")) %>% rename_with(~ sub("^V", "X", .x), .cols = starts_with("V"))
-iai.cases <- import(here("04_final_datasets", "infection_draws", "iai.cases.RDATA")) %>% rename_with(~ sub("^V", "X", .x), .cols = starts_with("V"))
-hap.cases <- import(here("04_final_datasets", "infection_draws", "hap.cases.lriratio.RDATA")) #%>% rename_with(~ sub("^V", "X", .x), .cols = starts_with("V"))
+ssti.nf.cases <- import(here("data", "ssti.nf.cases.RDATA")) %>% rename_with(~ sub("^V", "X", .x), .cols = starts_with("V"))
+iai.cases <- import(here("data", "iai.cases.RDATA")) %>% rename_with(~ sub("^V", "X", .x), .cols = starts_with("V"))
+hap.cases <- import(here("data", "hap.cases.lriratio.RDATA")) #%>% rename_with(~ sub("^V", "X", .x), .cols = starts_with("V"))
 
 
 # -------------------------------------------------------------#
 # Change scenario & benchmark info depending on criteria ####
 #--------------------------------------------------------------#
 # specify scenario 
-# scenario.folder <- "scenario_4"
-# scenario.file <- "scen4"
-scenario.folder <- "scenario_4_revision" # make new folder for revised estimates for paper
+scenario.folder <- "scenario_4"
 scenario.file <- "scen4"
+
 
 # specify benchmark countries 
 benchmark.country.c4 <- "CHE"
@@ -238,13 +237,13 @@ exp.total.ddd <- exp.total %>%
 
 # Reserve DDD from benchmark countries
 
-reserve.benchmark <- import(here("04_final_datasets", "reserve.ddd.benchmark.RDATA"))
+reserve.benchmark <- import(here("data", "reserve.ddd.benchmark.RDATA"))
 
 # Read in summed CRO, VRO and TB cases 
-cro.cases <- import(here("04_final_datasets", "resistance_draws", "cro.cases.df.RDATA"))
-vro.cases <- import(here("04_final_datasets", "resistance_draws", "vro.cases.df.RDATA"))
-mdrtb.cases <- import(here("04_final_datasets", "infection_draws", "mdr_tb.cases.df.RDATA"))
-xdrtb.cases <- import(here("04_final_datasets", "infection_draws", "xdr_tb.cases.df.RDATA"))
+cro.cases <- import(here("data", "cro.cases.df.RDATA"))
+vro.cases <- import(here("data", "vro.cases.df.RDATA"))
+mdrtb.cases <- import(here("data", "mdr_tb.cases.df.RDATA"))
+xdrtb.cases <- import(here("data", "xdr_tb.cases.df.RDATA"))
 
 # actual case counts and ddds not cases/100k and DID 
 
@@ -535,12 +534,12 @@ global.exp.ddd <- bind_rows(global.total.ddd, global.reserve.ddd, global.watch.d
 
 
 
-export(global.exp.ddd, here("06_results", "fair_share_paper", "abu_estimates", scenario.folder, paste0("global.exp.ddd.", scenario.file, ".RDATA")))
-export(exp.total.ddd, here("06_results", "fair_share_paper", "abu_estimates", scenario.folder, paste0("total.exp.ddd.", scenario.file, ".RDATA")))
-export(reserve.ddd.exp, here("06_results", "fair_share_paper", "abu_estimates", scenario.folder, paste0("reserve.exp.ddd.", scenario.file, ".RDATA")))
-export(watch.exp.ddd, here("06_results", "fair_share_paper", "abu_estimates", scenario.folder, paste0("watch.exp.ddd.", scenario.file, ".RDATA")))
-export(access.exp.ddd, here("06_results", "fair_share_paper", "abu_estimates", scenario.folder, paste0("access.exp.ddd.", scenario.file, ".RDATA")))
-export(access.ddd.perc, here("06_results", "fair_share_paper", "abu_estimates", scenario.folder, paste0("access.ddd.perc.", scenario.file, ".RDATA")))
+export(global.exp.ddd, here("results", "abu_estimates", scenario.folder, paste0("global.exp.ddd.", scenario.file, ".RDATA")))
+export(exp.total.ddd, here("results", "abu_estimates", scenario.folder, paste0("total.exp.ddd.", scenario.file, ".RDATA")))
+export(reserve.ddd.exp, here("results", "abu_estimates", scenario.folder, paste0("reserve.exp.ddd.", scenario.file, ".RDATA")))
+export(watch.exp.ddd, here("results", "abu_estimates", scenario.folder, paste0("watch.exp.ddd.", scenario.file, ".RDATA")))
+export(access.exp.ddd, here("results", "abu_estimates", scenario.folder, paste0("access.exp.ddd.", scenario.file, ".RDATA")))
+export(access.ddd.perc, here("results", "abu_estimates", scenario.folder, paste0("access.ddd.perc.", scenario.file, ".RDATA")))
 
 
 
@@ -574,10 +573,10 @@ reserve.exp.did[160, 2] + watch.exp.did[160, 2] + access.exp.did[160,2]
 
 # === Export DID datasets ==== # 
 
-export(total.exp.did, here("06_results", "fair_share_paper", "abu_estimates", scenario.folder, paste0("total.exp.did.", scenario.file, ".RDATA")))
-export(reserve.exp.did, here("06_results", "fair_share_paper", "abu_estimates", scenario.folder, paste0("reserve.exp.did.", scenario.file, ".RDATA")))
-export(watch.exp.did, here("06_results", "fair_share_paper", "abu_estimates", scenario.folder, paste0("watch.exp.did.", scenario.file, ".RDATA")))
-export(access.exp.did, here("06_results", "fair_share_paper", "abu_estimates", scenario.folder, paste0("access.exp.did.", scenario.file, ".RDATA")))
+export(total.exp.did, here("results", "abu_estimates", scenario.folder, paste0("total.exp.did.", scenario.file, ".RDATA")))
+export(reserve.exp.did, here("results", "abu_estimates", scenario.folder, paste0("reserve.exp.did.", scenario.file, ".RDATA")))
+export(watch.exp.did, here("results", "abu_estimates", scenario.folder, paste0("watch.exp.did.", scenario.file, ".RDATA")))
+export(access.exp.did, here("results", "abu_estimates", scenario.folder, paste0("access.exp.did.", scenario.file, ".RDATA")))
 
 
 
@@ -618,4 +617,4 @@ assign(paste0(scenario.folder, ".summary"), get(paste0(scenario.folder, ".summar
 
 # save
 
-export(get(paste0(scenario.folder, ".summary")), here("06_results", "fair_share_paper", "abu_estimates", scenario.folder, paste0(scenario.file, ".summary.RDATA")))
+export(get(paste0(scenario.folder, ".summary")), here("results", "abu_estimates", scenario.folder, paste0(scenario.file, ".summary.RDATA")))
